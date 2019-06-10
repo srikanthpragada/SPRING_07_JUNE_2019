@@ -2,9 +2,12 @@ package com.st.springboot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-// @Component 
+@Component 
+@Lazy 
 public class JavaBooks implements Books {
 
 	public JavaBooks() {

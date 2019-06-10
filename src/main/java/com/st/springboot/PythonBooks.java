@@ -3,9 +3,11 @@ package com.st.springboot;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component 
+@Component("python")  // python is name of the bean
+@Scope(scopeName = "prototype")
 public class PythonBooks implements Books {
 	public PythonBooks() {
 		System.out.println("PythonBooks created!");
