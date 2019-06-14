@@ -10,6 +10,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @SpringBootApplication
 public class JobsManager implements CommandLineRunner {
@@ -74,12 +78,44 @@ public class JobsManager implements CommandLineRunner {
         System.out.println("No. of rows updated : " + count);		
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void updateTwo(int e1,int e2)  {
+		TransactionStatus status =	TransactionAspectSupport.currentTransactionStatus();
+		System.out.println("Transaction Begins");
+		
+		System.out.println("Update Begins...");
+		int count = jdbcTemplate.update
+		  ("update employees set salary = salary + 1000 where employee_id = ?",
+ 		  e1);
+		if ( count == 0)
+			//throw new RuntimeException();
+			status.setRollbackOnly();
+		
+		System.out.println("First Update Done");
+
+		count = jdbcTemplate.update
+  	       ("update employees set salary = salary + 2000 where employee_id = ?",
+		   e2);
+	    if (count == 0)
+	    	status.setRollbackOnly();
+		   // throw new RuntimeException();
+	    
+	    System.out.println("Update Ends");
+	}
+	
 	public void run(String... args) {
 		// showJobCount();
 		// listJobs();
 		// listJobs2();
-		//listJobTitles();
-		updateMinSalary();
+		// listJobTitles();
+		// updateMinSalary();
+		try {
+		  updateTwo(110,320);
+		  System.out.println("Operation Completed!");
+		}
+		catch(Exception ex) {
+		  System.out.println("Operation Failed");
+		}
 
 	}
 
