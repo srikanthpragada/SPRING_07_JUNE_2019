@@ -5,18 +5,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-@SpringBootApplication
-public class JobsManager implements CommandLineRunner {
+@Component 
+public class JobsManager  {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
@@ -83,13 +82,14 @@ public class JobsManager implements CommandLineRunner {
 		TransactionStatus status =	TransactionAspectSupport.currentTransactionStatus();
 		System.out.println("Transaction Begins");
 		
-		System.out.println("Update Begins...");
 		int count = jdbcTemplate.update
 		  ("update employees set salary = salary + 1000 where employee_id = ?",
  		  e1);
-		if ( count == 0)
+		if (count == 0) {
 			//throw new RuntimeException();
 			status.setRollbackOnly();
+			// return;
+		}
 		
 		System.out.println("First Update Done");
 
@@ -98,8 +98,9 @@ public class JobsManager implements CommandLineRunner {
 		   e2);
 	    if (count == 0)
 	    	status.setRollbackOnly();
-		   // throw new RuntimeException();
-	    
+		    // throw new RuntimeException();
+	    System.out.println("New Transaction " + status.isNewTransaction());
+	    System.out.println("Rollback ? " + status.isRollbackOnly());
 	    System.out.println("Update Ends");
 	}
 	

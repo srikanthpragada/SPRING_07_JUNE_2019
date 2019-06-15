@@ -1,13 +1,11 @@
-package jpa;
+package web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DeptManager {
-
-	public static void main(String[] args) {
-        SpringApplication.run(DeptManager.class, args);
+public class StartWeb {
+	public static void main(String... args) {
+		SpringApplication.run(StartWeb.class, args);
 	}
-
 }
