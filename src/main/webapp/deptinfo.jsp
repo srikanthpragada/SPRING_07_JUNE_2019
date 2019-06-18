@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Greetings</title>
+<title>Department Info</title>
 </head>
 <body>
 <h3>${dept.name}</h3>

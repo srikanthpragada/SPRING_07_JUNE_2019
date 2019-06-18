@@ -21,7 +21,7 @@ public class TestJPA implements CommandLineRunner {
 	public void run(String ... args) {
 		 // addDept.add(300, "Sports");
 		 // dept.list();
-		 dept.listById(200);
+		 // dept.listById(200);
 	}
 
 }

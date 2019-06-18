@@ -2,30 +2,66 @@ package web;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jpa.Department;
 import jpa.DeptRepo;
 
-@Controller 
+@Controller
 public class DeptController {
-	
+
 	@Autowired
 	private DeptRepo depts;
-	
+
 	@RequestMapping("/dept")
 	public String getDept(@RequestParam("id") int id, ModelMap model) {
 		Optional<Department> dept = depts.findById(id);
 		if (dept.isPresent())
-			model.put("dept",dept.get());
+			model.addAttribute("dept", dept.get());
 		else
-			model.put("message","Sorry! Department Id not found!");
-		
+			model.addAttribute("message", "Sorry! Department Id not found!");
+
 		return "deptinfo";
+	}
+
+	@RequestMapping("/deptlist")
+	public String getDeptList(ModelMap model) {
+		model.addAttribute("depts", depts.findAll());
+		return "deptlist";
+	}
+
+	@RequestMapping("/adddept")
+	public String addDept(ModelMap model) {
+		Department d = new Department();
+		model.addAttribute("dept", d);
+		return "add_dept";
+	}
+
+	@RequestMapping(value = "/adddept", method = RequestMethod.POST)
+	public String addDept(@Valid Department d, Errors errors, ModelMap model) {
+
+		try {
+			if (errors.getErrorCount() > 0)
+				throw new RuntimeException(errors.toString());
+
+			if (depts.findById(d.getId()).isPresent())
+				throw new RuntimeException("Dept Id exits");
+
+			depts.save(d);
+			return "redirect:deptlist";
+		} catch (Exception ex) {
+			model.addAttribute("dept", d);
+			model.addAttribute("message", ex.getMessage());
+			return "add_dept";
+		}
 	}
 
 }
